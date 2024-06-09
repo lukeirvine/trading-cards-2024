@@ -1,14 +1,17 @@
 from classes.card_template import CardTemplate
 import os
 
+
 class CardGenerator:
     def __init__(self, output_dir, use_pring_layout):
         self.output_dir = output_dir
         self.use_pring_layout = use_pring_layout
 
     def generate_card(self, staff_member):
-        template = CardTemplate(staff_member.image_path, staff_member.department).get_template()
-        
+        template = CardTemplate(
+            staff_member.image_path, staff_member.department
+        ).get_template()
+
         return template
 
     def add_print_layout(self, image):

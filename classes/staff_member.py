@@ -1,5 +1,6 @@
 import json
 
+
 class StaffMember:
     def __init__(
         self,
@@ -22,22 +23,10 @@ class StaffMember:
         self.years_worked = years_worked
         self.department = department
         self.questions = [
-            {
-                "question": "Favorite Bible Verse",
-                "answer": bible_verse
-            },
-            {
-                "question": question_1,
-                "answer": answer_1
-            },
-            {
-                "question": question_2,
-                "answer": answer_2
-            },
-            {
-                "question": question_3,
-                "answer": answer_3
-            }
+            {"question": "Favorite Bible Verse", "answer": bible_verse},
+            {"question": question_1, "answer": answer_1},
+            {"question": question_2, "answer": answer_2},
+            {"question": question_3, "answer": answer_3},
         ]
 
     def print_data(self):
@@ -47,6 +36,6 @@ class StaffMember:
             "position": self.position,
             "years_worked": self.years_worked,
             "department": self.department,
-            "questions": self.questions
+            "questions": self.questions,
         }
         print(json.dumps(data, indent=4))

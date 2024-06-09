@@ -10,7 +10,7 @@ class CardApp:
     def run(self):
         reader = CSVReader(self.csv_file_path)
         staff_members = reader.read_csv()
-        
+
         # for staff_member in staff_members:
         #     staff_member.print_data()
 
