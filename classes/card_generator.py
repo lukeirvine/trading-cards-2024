@@ -1,4 +1,4 @@
-from classes.card_template import CardTemplate
+from classes.card_front_generator import CardFrontGenerator
 import os
 
 
@@ -8,9 +8,9 @@ class CardGenerator:
         self.use_pring_layout = use_pring_layout
 
     def generate_card(self, staff_member):
-        template = CardTemplate(
+        template = CardFrontGenerator(
             staff_member.image_path, staff_member.department
-        ).get_template()
+        ).get_card_face()
 
         return template
 

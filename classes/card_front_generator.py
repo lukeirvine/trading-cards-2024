@@ -6,7 +6,7 @@ import cairosvg
 from utils import utils
 
 
-class CardTemplate:
+class CardFrontGenerator:
     def __init__(self, image_path="", department="null"):
         self.image_path = image_path
         self.department = department
@@ -98,7 +98,7 @@ class CardTemplate:
             },
         }
 
-    def get_template(self):
+    def get_card_face(self):
         # create canvas to build everything on
         canvas = Image.new(
             "RGB", (utils.CARD_WIDTH, utils.CARD_HEIGHT), color=(255, 255, 255)

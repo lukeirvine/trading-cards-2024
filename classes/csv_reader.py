@@ -1,6 +1,6 @@
 import csv
 from classes.staff_member import StaffMember
-from classes.card_template import CardTemplate
+from classes.card_front_generator import CardFrontGenerator
 import os
 from utils import utils
 
@@ -55,7 +55,7 @@ class CSVReader:
                 )
 
             # check that department is valid
-            palletes = CardTemplate().get_palletes()
+            palletes = CardFrontGenerator().get_palletes()
             if sm.department not in palletes.keys():
                 error = f'The department "{sm.department}" is not valid. Valid departments are:\n'
                 for dep in palletes.keys():

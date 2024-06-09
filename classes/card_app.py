@@ -16,6 +16,10 @@ class CardApp:
 
         # use_print_layout = input("Would you like to use the print layout? (y/n): ").strip().lower() == 'y'
 
+        print("=========================================")
+        print("Generating cards...")
+        print("=========================================")
+
         generator = CardGenerator(self.output_dir, False)
         generated_images = []
 
