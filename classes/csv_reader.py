@@ -55,7 +55,7 @@ class CSVReader:
                 )
 
             # check that department is valid
-            palletes = CardFrontGenerator().get_palletes()
+            palletes = utils.PALLETES
             if sm.department not in palletes.keys():
                 error = f'The department "{sm.department}" is not valid. Valid departments are:\n'
                 for dep in palletes.keys():

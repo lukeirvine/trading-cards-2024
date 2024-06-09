@@ -7,96 +7,8 @@ from utils import utils
 
 
 class CardFrontGenerator:
-    def __init__(self, image_path="", department="null"):
-        self.image_path = image_path
-        self.department = department
-        self.palletes = {
-            "leadership": {
-                "border_color": (60, 89, 115),
-                "primary": (60, 89, 115),
-                "secondary": (60, 89, 115),
-            },
-            "extreme": {
-                "border_color": (56, 65, 42),
-                "primary": (56, 65, 42),
-                "secondary": (56, 65, 42),
-            },
-            "housekeeping": {
-                "border_color": (59, 41, 58),
-                "primary": (59, 41, 58),
-                "secondary": (59, 41, 58),
-            },
-            "office": {
-                "border_color": (49, 47, 89),
-                "primary": (49, 47, 89),
-                "secondary": (49, 47, 89),
-            },
-            "waterfront": {
-                "border_color": (117, 0, 255),
-                "primary": (105, 186, 201),
-                "secondary": (201, 114, 105),
-            },
-            "activities": {
-                "border_color": (177, 74, 53),
-                "primary": (177, 74, 53),
-                "secondary": (177, 74, 53),
-            },
-            "art": {
-                "border_color": (146, 67, 83),
-                "primary": (146, 67, 83),
-                "secondary": (146, 67, 83),
-            },
-            "challenge": {
-                "border_color": (89, 155, 152),
-                "primary": (89, 155, 152),
-                "secondary": (89, 155, 152),
-            },
-            "comms": {
-                "border_color": (186, 118, 48),
-                "primary": (186, 118, 48),
-                "secondary": (186, 118, 48),
-            },
-            "dt": {
-                "border_color": (126, 46, 46),
-                "primary": (126, 46, 46),
-                "secondary": (126, 46, 46),
-            },
-            "equestrian": {
-                "border_color": (25, 89, 65),
-                "primary": (25, 89, 65),
-                "secondary": (25, 89, 65),
-            },
-            "kitchen": {
-                "border_color": (76, 20, 17),
-                "primary": (76, 20, 17),
-                "secondary": (76, 20, 17),
-            },
-            "maintenance": {
-                "border_color": (78, 78, 80),
-                "primary": (78, 78, 80),
-                "secondary": (78, 78, 80),
-            },
-            "survival": {
-                "border_color": (140, 88, 58),
-                "primary": (140, 88, 58),
-                "secondary": (140, 88, 58),
-            },
-            "ultimate": {
-                "border_color": (217, 109, 85),
-                "primary": (217, 109, 85),
-                "secondary": (217, 109, 85),
-            },
-            "programming": {
-                "border_color": (0, 0, 0),
-                "primary": (0, 0, 0),
-                "secondary": (0, 0, 0),
-            },
-            "null": {
-                "border_color": (50, 50, 50),
-                "primary": (50, 50, 50),
-                "secondary": (50, 50, 50),
-            },
-        }
+    def __init__(self, staff_member):
+        self.staff_member = staff_member
 
     def get_card_face(self):
         # create canvas to build everything on
@@ -105,14 +17,14 @@ class CardFrontGenerator:
         )
 
         # add main image to card
-        image = Image.open(os.path.join("images", self.image_path))
+        image = Image.open(os.path.join("images", self.staff_member.image_path))
         image = self._resize_and_crop_image(
             image, utils.CARD_WIDTH, utils.CARD_HEIGHT + 20
         )
         canvas.paste(image, (0, 0))
 
         # add border to card
-        border_color = self.palletes[self.department]["border_color"]
+        border_color = utils.PALLETES[self.staff_member.department]["border_color"]
         border_image = self._process_svg("materials/border.svg", border_color)
         border_image = self._resize_border_image(
             border_image, utils.CARD_WIDTH + 2, utils.CARD_HEIGHT
@@ -120,8 +32,8 @@ class CardFrontGenerator:
         canvas.paste(border_image, (-1, 0), border_image)
 
         # add text containers to card
-        c1_color = self.palletes[self.department]["primary"]
-        c2_color = self.palletes[self.department]["secondary"]
+        c1_color = utils.PALLETES[self.staff_member.department]["primary"]
+        c2_color = utils.PALLETES[self.staff_member.department]["secondary"]
         c1_image = self._process_svg("materials/name_container.svg", c1_color)
         c1_image = self._extend_text_container(c1_image, c1_image.width)
         c2_image = self._process_svg("materials/job_container.svg", c2_color)
@@ -136,7 +48,7 @@ class CardFrontGenerator:
         return canvas
 
     def get_palletes(self):
-        return self.palletes
+        return utils.PALLETES
 
     def _resize_and_crop_image(self, image, new_width, new_height):
         # Get the current width and height
@@ -205,3 +117,5 @@ class CardFrontGenerator:
     def _extend_text_container(self, image, new_width):
         # Extend the text container image to the new width
         return image.resize((new_width, image.height), Image.Resampling.LANCZOS)
+
+    # def _add_stars(self, image):
