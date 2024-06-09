@@ -32,7 +32,7 @@ def resize_and_crop_image(image, new_width, new_height):
   resized_height = int(current_height * scale_factor)
 
   # Resize the image while maintaining the aspect ratio
-  resized_image = image.resize((resized_width, resized_height), Image.ANTIALIAS)
+  resized_image = image.resize((resized_width, resized_height), Image.Resampling.LANCZOS)
 
   # Calculate the coordinates for cropping
   left = (resized_width - new_width) / 2
@@ -57,7 +57,7 @@ def add_front_text(canvas, texts, outline_color):
     wrapper = textwrap.TextWrapper(width=text['width'])
     wrapped_text = wrapper.wrap(text['text'])
     text['wrapped_text'] = wrapped_text
-    y -= font.getsize(text['text'])[1] * len(wrapped_text)
+    y -= font.getbbox(text['text'])[1] * len(wrapped_text)
     y -= text['margin_bottom']
 
   # print each set of text
@@ -69,13 +69,13 @@ def add_front_text(canvas, texts, outline_color):
     wrapped_text = text['wrapped_text']
 
     # Calculate the x and y coordinates for the text to be centered
-    text_widths = [draw.textsize(line, font=font)[0] for line in wrapped_text]
+    text_widths = [draw.textbbox((0, 0), line, font=font)[0] for line in wrapped_text]
     max_text_width = max(text_widths)
     x = (canvas.width - max_text_width) / 2
 
     # Draw the wrapped text on the image at the centered position
     for line in wrapped_text:
-      line_width = draw.textsize(line, font=font)[0]
+      line_width = draw.textbbox((0, 0), line, font=font)[0]
       x_pos = (canvas.width - line_width) / 2
       fill_color = (255, 255, 255)
       width = 3
@@ -86,7 +86,7 @@ def add_front_text(canvas, texts, outline_color):
       draw.text((x_pos, y - width), line, fill=outline_color, font=font)
       # draw main text
       draw.text((x_pos, y), line, fill=fill_color, font=font)
-      y += font.getsize(line)[1]
+      y += font.getbbox(line)[1]
     
     # adjust y for margin
     y += text['margin_bottom']
@@ -146,20 +146,20 @@ def add_back_text(canvas, info):
       text_wrapped_text = text_wrapper.wrap(text)
 
       for line in title_wrapped_text:
-        line_width = draw.textsize(line, font=title_font)[0]
+        line_width = draw.textbbox((0, 0), line, font=title_font)[0]
         x_pos = (canvas.width - line_width) / 2
         if drawing:
           draw.text((x_pos, y), line, fill=(255, 255, 255), font=title_font)
-        y += title_font.getsize(line)[1]
+        y += title_font.getbbox(line)[1]
       # margin below title
       y += 7
 
       for line in text_wrapped_text:
-        line_width = draw.textsize(line, font=text_font)[0]
+        line_width = draw.textbbox((0, 0), line, font=text_font)[0]
         x_pos = (canvas.width - line_width) / 2
         if drawing:
           draw.text((x_pos, y), line, fill=(255, 255, 255), font=text_font)
-        y += text_font.getsize(line)[1]
+        y += text_font.getbbox(line)[1]
       # margin below text
       y += 30
     # determine next action based on how low we went
@@ -192,8 +192,8 @@ def add_print_border(card, color, path):
   draw = ImageDraw.Draw(canvas)
   now = datetime.now()
   formatted_time = now.strftime("%m/%d/%y  %I:%M:%S %p")
-  time_width = draw.textsize(formatted_time, font=font)[0]
-  time_height = font.getsize(formatted_time)[1]
+  time_width = draw.textbbox((0, 0), formatted_time, font=font)[0]
+  time_height = font.getbbox(formatted_time)[1]
   x = canvas.width - time_width - 15
   y = canvas.height - time_height - 15
   # draw.text((x, y), formatted_time, fill=(0, 0, 0), font=font)
