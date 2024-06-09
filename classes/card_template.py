@@ -1,11 +1,9 @@
-from utils.consts import CARD_HEIGHT, CARD_WIDTH
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 import os
 import svgwrite
 from io import BytesIO
 import cairosvg
-from utils.funcs import convert_svg_to_png
-from utils.consts import CONT_1_TOP, CONT_2_TOP
+from utils import utils
 
 
 class CardTemplate:
@@ -102,18 +100,22 @@ class CardTemplate:
 
     def get_template(self):
         # create canvas to build everything on
-        canvas = Image.new("RGB", (CARD_WIDTH, CARD_HEIGHT), color=(255, 255, 255))
+        canvas = Image.new(
+            "RGB", (utils.CARD_WIDTH, utils.CARD_HEIGHT), color=(255, 255, 255)
+        )
 
         # add main image to card
         image = Image.open(os.path.join("images", self.image_path))
-        image = self._resize_and_crop_image(image, CARD_WIDTH, CARD_HEIGHT + 20)
+        image = self._resize_and_crop_image(
+            image, utils.CARD_WIDTH, utils.CARD_HEIGHT + 20
+        )
         canvas.paste(image, (0, 0))
 
         # add border to card
         border_color = self.palletes[self.department]["border_color"]
         border_image = self._process_svg("materials/border.svg", border_color)
         border_image = self._resize_border_image(
-            border_image, CARD_WIDTH + 2, CARD_HEIGHT
+            border_image, utils.CARD_WIDTH + 2, utils.CARD_HEIGHT
         )
         canvas.paste(border_image, (-1, 0), border_image)
 
@@ -128,8 +130,8 @@ class CardTemplate:
         # print(f"CONT 1 image width: {c1_image.width}")
         # print(f"CONT 2 image height: {c2_image.height}")
         print(f"CONT 2 image width: {c2_image.width}")
-        canvas.paste(c1_image, (-1, CONT_1_TOP), c1_image)
-        canvas.paste(c2_image, (-1, CONT_2_TOP), c2_image)
+        canvas.paste(c1_image, (-1, utils.CONT_1_TOP), c1_image)
+        canvas.paste(c2_image, (-1, utils.CONT_2_TOP), c2_image)
 
         return canvas
 
@@ -172,7 +174,7 @@ class CardTemplate:
 
     def _process_svg(self, svg_path, color):
         # Convert SVG to PNG
-        image = convert_svg_to_png(svg_path)
+        image = utils.convert_svg_to_png(svg_path)
 
         # Recolor the image
         image = self._recolor_image(image, color)

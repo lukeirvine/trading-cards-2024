@@ -2,7 +2,7 @@ import csv
 from classes.staff_member import StaffMember
 from classes.card_template import CardTemplate
 import os
-from utils.consts import MAX_YEARS
+from utils import utils
 
 
 class CSVReader:
@@ -49,9 +49,9 @@ class CSVReader:
                 errors.append(f"The name column on row {i + 2} should not contain '/'")
 
             # check that years is less than max
-            if int(sm.years_worked) > MAX_YEARS:
+            if int(sm.years_worked) > utils.MAX_YEARS:
                 errors.append(
-                    f"The years worked for {sm.name} is greater than {MAX_YEARS}."
+                    f"The years worked for {sm.name} is greater than {utils.MAX_YEARS}."
                 )
 
             # check that department is valid
