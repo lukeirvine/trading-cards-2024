@@ -1,9 +1,11 @@
+import json
+
 class StaffMember:
     def __init__(
         self,
         image_path,
         name,
-        positions,
+        position,
         years_worked,
         department,
         bible_verse,
@@ -16,13 +18,35 @@ class StaffMember:
     ):
         self.image_path = image_path
         self.name = name
-        self.positions = positions
+        self.position = position
         self.years_worked = years_worked
         self.department = department
-        self.bible_verse = bible_verse
-        self.question_1 = question_1
-        self.answer_1 = answer_1
-        self.question_2 = question_2
-        self.answer_2 = answer_2
-        self.question_3 = question_3
-        self.answer_3 = answer_3
+        self.questions = [
+            {
+                "question": "Favorite Bible Verse",
+                "answer": bible_verse
+            },
+            {
+                "question": question_1,
+                "answer": answer_1
+            },
+            {
+                "question": question_2,
+                "answer": answer_2
+            },
+            {
+                "question": question_3,
+                "answer": answer_3
+            }
+        ]
+
+    def print_data(self):
+        data = {
+            "image_path": self.image_path,
+            "name": self.name,
+            "position": self.position,
+            "years_worked": self.years_worked,
+            "department": self.department,
+            "questions": self.questions
+        }
+        print(json.dumps(data, indent=4))
