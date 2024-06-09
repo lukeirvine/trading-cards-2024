@@ -1,6 +1,0 @@
-# Limits
-MAX_YEARS = 14
-
-# Layouts
-CARD_WIDTH = 750
-CARD_HEIGHT = 1050

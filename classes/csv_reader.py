@@ -2,7 +2,7 @@ import csv
 from classes.staff_member import StaffMember
 from classes.card_template import CardTemplate
 import os
-from constants.template import MAX_YEARS
+from utils.consts import MAX_YEARS
 
 
 class CSVReader:

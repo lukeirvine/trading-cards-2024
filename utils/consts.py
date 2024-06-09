@@ -1,0 +1,12 @@
+# Limits
+MAX_YEARS = 14
+
+# Layouts
+CARD_WIDTH = 750
+CARD_HEIGHT = 1050
+# height is 149
+CONT_1_TOP = 741
+CONT_1_MAX_WIDTH = 750
+# height is 124
+CONT_2_TOP = 888
+CONT_2_MAX_WIDTH = 340
