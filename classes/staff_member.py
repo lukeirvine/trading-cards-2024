@@ -20,7 +20,7 @@ class StaffMember:
         self.image_path = image_path
         self.name = name
         self.position = position
-        self.years_worked = years_worked
+        self.years_worked = int(years_worked)
         self.department = department
         self.questions = [
             {"question": "Favorite Bible Verse", "answer": bible_verse},

@@ -45,6 +45,9 @@ class CardFrontGenerator:
         canvas.paste(c1_image, (-1, utils.CONT_1_TOP), c1_image)
         canvas.paste(c2_image, (-1, utils.CONT_2_TOP), c2_image)
 
+        # add stars
+        canvas = self._add_stars(canvas)
+
         return canvas
 
     def get_palletes(self):
@@ -118,4 +121,21 @@ class CardFrontGenerator:
         # Extend the text container image to the new width
         return image.resize((new_width, image.height), Image.Resampling.LANCZOS)
 
-    # def _add_stars(self, image):
+    def _add_stars(self, canvas):
+        star = self._process_svg("materials/star.svg", (255, 255, 255))
+        star = self._recolor_image(
+            star, utils.PALLETES[self.staff_member.department]["star"]
+        )
+        star_width = star.width
+        canvas.paste(star, (utils.STAR_START_POS_X, utils.STAR_START_POS_Y), star)
+        for i in range(0, self.staff_member.years_worked):
+            offset = utils.STAR_ROW_OFFSET if (i // 7) % 2 == 1 else 0
+            x = (
+                utils.STAR_START_POS_X
+                + (star_width + utils.STAR_SPACING_X) * (i % 7)
+                + offset
+            )
+            y = utils.STAR_START_POS_Y + (star_width + utils.STAR_SPACING_Y) * (i // 7)
+            canvas.paste(star, (x, y), star)
+
+        return canvas
