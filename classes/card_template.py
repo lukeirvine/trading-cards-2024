@@ -1,7 +1,9 @@
 from constants.template import CARD_HEIGHT, CARD_WIDTH
 from PIL import Image, ImageDraw, ImageFont
 import os
-
+import svgwrite
+from io import BytesIO
+import cairosvg
 
 class CardTemplate:
     def __init__(self, image_path="", department="null"):
@@ -96,10 +98,21 @@ class CardTemplate:
         }
 
     def get_template(self):
+        # create canvas to build everything on
         canvas = Image.new("RGB", (CARD_WIDTH, CARD_HEIGHT), color=(255, 255, 255))
+        
+        # add main image to card
         image = Image.open(os.path.join("images", self.image_path))
         image = self._resize_and_crop_image(image, CARD_WIDTH, CARD_HEIGHT + 20)
         canvas.paste(image, (0, 0))
+        
+        # add border to card
+        border_color = self.palletes[self.department]["border_color"]
+        border_image = self._process_svg_border("materials/border.svg", border_color)
+        border_image = self._resize_border_image(border_image, CARD_WIDTH + 2, CARD_HEIGHT)
+        
+        #combine the image with the border
+        canvas.paste(border_image, (-1, 0), border_image)
 
         return canvas
 
@@ -139,3 +152,34 @@ class CardTemplate:
         cropped_image = resized_image.crop((left, top, right, bottom))
 
         return cropped_image
+
+    def _process_svg_border(self, svg_path, border_color):
+        # Convert SVG to PNG
+        png_data = cairosvg.svg2png(url=svg_path)
+        border_image = Image.open(BytesIO(png_data))
+
+        # Recolor the border image
+        border_image = self._recolor_image(border_image, border_color)
+
+        return border_image
+
+    def _recolor_image(self, image, new_color):
+        # Ensure the image is in RGBA mode
+        image = image.convert("RGBA")
+        data = image.getdata()
+
+        # Replace all non-transparent pixels with the new color
+        new_data = []
+        for item in data:
+            # Change all white (also checking alpha) pixels to the new color
+            if item[3] > 0:  # Check alpha
+                new_data.append(new_color + (item[3],))
+            else:
+                new_data.append(item)
+
+        image.putdata(new_data)
+        return image
+    
+    def _resize_border_image(self, image, new_width, new_height):
+        # Resize the border image to fit the new dimensions without maintaining aspect ratio
+        return image.resize((new_width, new_height), Image.Resampling.LANCZOS)

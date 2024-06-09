@@ -9,6 +9,39 @@ This Python script creates stylized trading cards from a spreadsheet. It was cre
 </div>
 <br>
 
+## Set up dependencies
+
+### Cairo SVG
+**Cairo SVG** is a Python library that allows you to generate SVG files. It provides a simple and intuitive API for creating and manipulating SVG graphics. You can install Cairo SVG by running the following command:
+
+```
+pip3 install cairosvg
+```
+
+Get the installation path with 
+```
+brew info cairo
+```
+
+For this example, the path is `/opt/homebrew/Cellar/cairo/1.18.0`. Fun the following commands to temporarily set the environment variables in your current shell session to include the paths where Homebrew installs libraries:
+```
+export PKG_CONFIG_PATH="/opt/homebrew/Cellar/cairo/1.18.0/lib/pkgconfig:$PKG_CONFIG_PATH"
+export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/cairo/1.18.0/lib:$DYLD_LIBRARY_PATH"
+```
+To make these changes permanent, add them to your shell profile (e.g., .bash_profile, .bashrc, or .zshrc):
+```
+echo 'export PKG_CONFIG_PATH="/opt/homebrew/Cellar/cairo/1.18.0/lib/pkgconfig:$PKG_CONFIG_PATH"' >> ~/.zshrc
+echo 'export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/cairo/1.18.0/lib:$DYLD_LIBRARY_PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+Then you can verify your environment variables:
+```
+echo $PKG_CONFIG_PATH
+echo $DYLD_LIBRARY_PATH
+```
+
+Once installed, you can import the library in your Python script and use it to generate SVG files for your trading cards.
+
 ## Instructions
 1. Create a csv file with the following values in the following order:
 
