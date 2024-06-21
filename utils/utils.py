@@ -23,6 +23,11 @@ class Utils:
         self.STAR_SPACING_X = 10
         self.STAR_SPACING_Y = 10
         self.STAR_ROW_OFFSET = -25
+        
+        self.BACK_MARGIN = 50
+        
+        # Misc ========================
+        self.LOGO_PATH = "materials/full-logo.png"
 
         # Styling ========================
         self.PALLETES = {
@@ -137,6 +142,20 @@ class Utils:
         return image
     
     def get_title_font(self, desired_height):
+        font_path = "fonts/PoetsenOne-Regular.ttf"
+        size = 36
+        font = ImageFont.truetype(font_path, size)
+
+        # Measure the text height
+        dummy_text = "A"
+        bbox = font.getbbox(dummy_text)
+        text_height = bbox[3] - bbox[1]
+
+        # Adjust the font size to match the desired height
+        adjusted_size = int(size * desired_height / text_height)
+        return ImageFont.truetype(font_path, adjusted_size)
+    
+    def get_question_font(self, desired_height):
         font_path = "fonts/PoetsenOne-Regular.ttf"
         size = 36
         font = ImageFont.truetype(font_path, size)
