@@ -1,4 +1,5 @@
 from classes.card_front_generator import CardFrontGenerator
+from classes.card_back_generator import CardBackGenerator
 import os
 
 
@@ -8,9 +9,11 @@ class CardGenerator:
         self.use_pring_layout = use_pring_layout
 
     def generate_card(self, staff_member):
-        template = CardFrontGenerator(staff_member).get_card_face()
+        front_image = CardFrontGenerator(staff_member).get_card_face()
+        
+        back_image = CardBackGenerator(staff_member).get_card_back()
 
-        return template
+        return (front_image, back_image)
 
     def add_print_layout(self, image):
         print(f"TODO: Add print layout to {image}")
