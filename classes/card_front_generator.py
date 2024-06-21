@@ -4,6 +4,7 @@ import svgwrite
 from io import BytesIO
 import cairosvg
 from utils import utils
+import datetime
 
 
 class CardFrontGenerator:
@@ -46,6 +47,9 @@ class CardFrontGenerator:
         # add name and position text
         canvas = self._add_h1_text(canvas)
         canvas = self._add_h2_text(canvas)
+        
+        # add year to top of card
+        canvas = self._add_year_text(canvas)
 
         return canvas
 
@@ -182,39 +186,85 @@ class CardFrontGenerator:
 
     def _add_h2_text(self, canvas):
         INDENT = 30
-        font_size = 30
-        font_top_offset = round(font_size * 0.4)
+        font_size = 28
+        font_top_offset = round(font_size * 0.4) + 5
         CONTAINER_CUSHION = 40
         font = utils.get_title_font(font_size)
         draw = ImageDraw.Draw(canvas)
         text = self.staff_member.position
-        bbox = draw.textbbox((0, 0), text, font=font)
-        text_width = bbox[2] - bbox[0]
-        text_height = bbox[3] - bbox[1]
-        
-        # adjust text width to fit the container
-        while (text_width > utils.CONT_2_MAX_WIDTH - 2 * INDENT - CONTAINER_CUSHION):
-            font_size -= 1
-            font = utils.get_title_font(font_size)
+        max_width = utils.CONT_2_MAX_WIDTH - 2 * INDENT - CONTAINER_CUSHION
+
+        def get_text_size(text, font):
             bbox = draw.textbbox((0, 0), text, font=font)
-            text_width = bbox[2] - bbox[0]
-            text_height = bbox[3] - bbox[1]
-            font_top_offset = round(font_size * 0.4)
-        
+            return bbox[2] - bbox[0], bbox[3] - bbox[1]
+
+        text_width, text_height = get_text_size(text, font)
+
+        # Adjust text width to fit the container
+        while text_width > max_width:
+            # Check if we can split text into two lines
+            words = text.split()
+            wrapped_text = text
+            for i in range(1, len(words)):
+                line1 = ' '.join(words[:i])
+                line2 = ' '.join(words[i:])
+                width1, height1 = get_text_size(line1, font)
+                width2, height2 = get_text_size(line2, font)
+                if width1 <= max_width and width2 <= max_width:
+                    wrapped_text = f"{line1}\n{line2}"
+                    text_width = max(width1, width2)
+                    text_height = height1 + height2
+                    break
+
+            # If still too wide, reduce the font size
+            if text_width > max_width:
+                font_size -= 1
+                font = utils.get_title_font(font_size)
+                text_width, text_height = get_text_size(wrapped_text, font)
+                font_top_offset = round(font_size * 0.4)
+            else:
+                text = wrapped_text
+
         c2_color = utils.PALLETES[self.staff_member.department]["secondary"]
         c2_image = self._process_svg("materials/job_container.svg", c2_color)
         new_width = text_width + 2 * INDENT + CONTAINER_CUSHION
-        if (new_width > utils.CONT_2_MAX_WIDTH):
+        if new_width > utils.CONT_2_MAX_WIDTH:
             new_width = utils.CONT_2_MAX_WIDTH
         c2_image = self._extend_text_container(c2_image, new_width)
         canvas.paste(c2_image, (-1, utils.CONT_2_TOP), c2_image)
-        
+
+        # Adjust text position to be centered
         text_top = utils.CONT_2_TOP - font_top_offset + (c2_image.height - text_height) / 2
         draw.text(
             (INDENT, text_top),
             text,
             font=font,
             fill=(255, 255, 255),
+            spacing=5  # Add spacing between lines if wrapped
         )
-        
+
+        return canvas
+    
+    def _add_year_text(self, canvas):
+        font = utils.get_title_font(28)
+        draw = ImageDraw.Draw(canvas)
+        text = str(datetime.datetime.now().year)
+        char_spacing = 10  # Adjust this value to increase or decrease spacing between characters
+        opacity = 50  # Set the opacity of the text (0-255)
+
+        # Calculate the width of the entire text including character spacing
+        text_width = sum(draw.textbbox((0, 0), char, font=font)[2] - draw.textbbox((0, 0), char, font=font)[0] + char_spacing for char in text) - char_spacing
+        text_height = draw.textbbox((0, 0), text, font=font)[3] - draw.textbbox((0, 0), text, font=font)[1]
+
+        # Start position for the text
+        start_x = utils.CARD_WIDTH / 2 - text_width / 2
+        start_y = 22
+
+        # Draw each character with spacing
+        x = start_x
+        for char in text:
+            draw.text((x, start_y), char, font=font, fill=(255, 255, 255, opacity))
+            char_width = draw.textbbox((0, 0), char, font=font)[2] - draw.textbbox((0, 0), char, font=font)[0]
+            x += char_width + char_spacing
+
         return canvas
