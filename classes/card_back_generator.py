@@ -19,6 +19,10 @@ class CardBackGenerator:
         
     def get_card_back(self):
         while (True):
+            if self.answer_size < 12:
+                # throw error
+                raise Exception(f"Text too long for card: {self.staff_member.name}")
+            
             # add a rectangle that fills the whole card
             draw = ImageDraw.Draw(self.canvas)
             draw.rectangle([0, 0, utils.CARD_WIDTH, utils.CARD_HEIGHT], fill=utils.PALLETES[self.staff_member.department]["border_color"])
@@ -34,11 +38,6 @@ class CardBackGenerator:
             self._add_questions()
             
             if self.pos_y < utils.CARD_HEIGHT - 50:
-                break
-            
-            if self.answer_size < 12:
-                # throw error
-                raise Exception(f"Text too long for card: {self.staff_member.name}")
                 break
             
             self.question_size -= 2
