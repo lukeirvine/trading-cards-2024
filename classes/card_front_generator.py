@@ -187,7 +187,7 @@ class CardFrontGenerator:
     def _add_h2_text(self, canvas):
         INDENT = 30
         font_size = 28
-        font_top_offset = round(font_size * 0.4) + 5
+        font_top_offset = round(font_size * 0.4)
         CONTAINER_CUSHION = 40
         font = utils.get_title_font(font_size)
         draw = ImageDraw.Draw(canvas)
@@ -214,6 +214,7 @@ class CardFrontGenerator:
                     wrapped_text = f"{line1}\n{line2}"
                     text_width = max(width1, width2)
                     text_height = height1 + height2
+                    font_top_offset += 5
                     break
 
             # If still too wide, reduce the font size
@@ -249,22 +250,29 @@ class CardFrontGenerator:
         font = utils.get_title_font(28)
         draw = ImageDraw.Draw(canvas)
         text = str(datetime.datetime.now().year)
-        char_spacing = 10  # Adjust this value to increase or decrease spacing between characters
-        opacity = 50  # Set the opacity of the text (0-255)
+        char_spacing = 15  # Adjust this value to increase or decrease spacing between characters
+        opacity = 150  # Adjust this value (0-255) to change the opacity
+
+        # Create a transparent layer for the text
+        text_layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+        text_draw = ImageDraw.Draw(text_layer)
 
         # Calculate the width of the entire text including character spacing
-        text_width = sum(draw.textbbox((0, 0), char, font=font)[2] - draw.textbbox((0, 0), char, font=font)[0] + char_spacing for char in text) - char_spacing
-        text_height = draw.textbbox((0, 0), text, font=font)[3] - draw.textbbox((0, 0), text, font=font)[1]
+        text_width = sum(text_draw.textbbox((0, 0), char, font=font)[2] - text_draw.textbbox((0, 0), char, font=font)[0] + char_spacing for char in text) - char_spacing
+        text_height = text_draw.textbbox((0, 0), text, font=font)[3] - text_draw.textbbox((0, 0), text, font=font)[1]
 
         # Start position for the text
         start_x = utils.CARD_WIDTH / 2 - text_width / 2
         start_y = 22
 
-        # Draw each character with spacing
+        # Draw each character with spacing on the transparent layer
         x = start_x
         for char in text:
-            draw.text((x, start_y), char, font=font, fill=(255, 255, 255, opacity))
-            char_width = draw.textbbox((0, 0), char, font=font)[2] - draw.textbbox((0, 0), char, font=font)[0]
+            text_draw.text((x, start_y), char, font=font, fill=(255, 255, 255, opacity))
+            char_width = text_draw.textbbox((0, 0), char, font=font)[2] - text_draw.textbbox((0, 0), char, font=font)[0]
             x += char_width + char_spacing
+
+        # Composite the text layer onto the canvas
+        canvas = Image.alpha_composite(canvas.convert("RGBA"), text_layer)
 
         return canvas
