@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageDraw
 import os
 import svgwrite
 from io import BytesIO
@@ -32,21 +32,20 @@ class CardFrontGenerator:
         canvas.paste(border_image, (-1, 0), border_image)
 
         # add text containers to card
-        c1_color = utils.PALLETES[self.staff_member.department]["primary"]
         c2_color = utils.PALLETES[self.staff_member.department]["secondary"]
-        c1_image = self._process_svg("materials/name_container.svg", c1_color)
-        c1_image = self._extend_text_container(c1_image, c1_image.width)
         c2_image = self._process_svg("materials/job_container.svg", c2_color)
         c2_image = self._extend_text_container(c2_image, c2_image.width)
         # print(f"CONT 1 image height: {c1_image.height}")
-        # print(f"CONT 1 image width: {c1_image.width}")
         # print(f"CONT 2 image height: {c2_image.height}")
         print(f"CONT 2 image width: {c2_image.width}")
-        canvas.paste(c1_image, (-1, utils.CONT_1_TOP), c1_image)
         canvas.paste(c2_image, (-1, utils.CONT_2_TOP), c2_image)
 
         # add stars
         canvas = self._add_stars(canvas)
+        
+        # add name and position text
+        canvas = self._add_h1_text(canvas)
+        canvas = self._add_h2_text(canvas)
 
         return canvas
 
@@ -138,4 +137,84 @@ class CardFrontGenerator:
             y = utils.STAR_START_POS_Y + (star_width + utils.STAR_SPACING_Y) * (i // 7)
             canvas.paste(star, (x, y), star)
 
+        return canvas
+
+    def _add_h1_text(self, canvas):
+        INDENT = 30
+        font_size = 70
+        font_top_offset = round(font_size * 0.4)
+        CONTAINER_CUSHION = 40
+        font = utils.get_title_font(font_size)
+        draw = ImageDraw.Draw(canvas)
+        text = self.staff_member.name
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        
+        # adjust text width to fit the container
+        while (text_width > utils.CONT_1_MAX_WIDTH - 2 * INDENT - CONTAINER_CUSHION):
+            font_size -= 1
+            font = utils.get_title_font(font_size)
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
+            font_top_offset = round(font_size * 0.4)
+        
+        c1_color = utils.PALLETES[self.staff_member.department]["primary"]
+        c1_image = self._process_svg("materials/name_container.svg", c1_color)
+        new_width = text_width + 2 * INDENT + CONTAINER_CUSHION
+        if (new_width > utils.CONT_1_MAX_WIDTH):
+            new_width = utils.CONT_1_MAX_WIDTH
+        if (new_width < utils.CONT_1_MIN_WIDTH):
+            new_width = utils.CONT_1_MIN_WIDTH
+        c1_image = self._extend_text_container(c1_image, new_width)
+        canvas.paste(c1_image, (-1, utils.CONT_1_TOP), c1_image)
+        
+        text_top = utils.CONT_1_TOP - font_top_offset + (c1_image.height - text_height) / 2
+        draw.text(
+            (INDENT, text_top),
+            text,
+            font=font,
+            fill=(255, 255, 255),
+        )
+        
+        return canvas
+
+    def _add_h2_text(self, canvas):
+        INDENT = 30
+        font_size = 30
+        font_top_offset = round(font_size * 0.4)
+        CONTAINER_CUSHION = 40
+        font = utils.get_title_font(font_size)
+        draw = ImageDraw.Draw(canvas)
+        text = self.staff_member.position
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        
+        # adjust text width to fit the container
+        while (text_width > utils.CONT_2_MAX_WIDTH - 2 * INDENT - CONTAINER_CUSHION):
+            font_size -= 1
+            font = utils.get_title_font(font_size)
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
+            font_top_offset = round(font_size * 0.4)
+        
+        c2_color = utils.PALLETES[self.staff_member.department]["secondary"]
+        c2_image = self._process_svg("materials/job_container.svg", c2_color)
+        new_width = text_width + 2 * INDENT + CONTAINER_CUSHION
+        if (new_width > utils.CONT_2_MAX_WIDTH):
+            new_width = utils.CONT_2_MAX_WIDTH
+        c2_image = self._extend_text_container(c2_image, new_width)
+        canvas.paste(c2_image, (-1, utils.CONT_2_TOP), c2_image)
+        
+        text_top = utils.CONT_2_TOP - font_top_offset + (c2_image.height - text_height) / 2
+        draw.text(
+            (INDENT, text_top),
+            text,
+            font=font,
+            fill=(255, 255, 255),
+        )
+        
         return canvas

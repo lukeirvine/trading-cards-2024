@@ -4,3 +4,6 @@
 /input-images
 /print-border-output
 /print-border-pdfs
+
+/classes/__pycache__
+/utils/__pycache__

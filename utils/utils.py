@@ -1,5 +1,5 @@
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageFont
 import cairosvg
 
 
@@ -13,6 +13,7 @@ class Utils:
         self.CARD_HEIGHT = 1050
         # height is 149
         self.CONT_1_TOP = 741
+        self.CONT_1_MIN_WIDTH = 482
         self.CONT_1_MAX_WIDTH = 650
         # height is 124
         self.CONT_2_TOP = 888
@@ -134,6 +135,20 @@ class Utils:
         image = Image.open(BytesIO(png_data))
 
         return image
+    
+    def get_title_font(self, desired_height):
+        font_path = "fonts/PoetsenOne-Regular.ttf"
+        size = 36
+        font = ImageFont.truetype(font_path, size)
+
+        # Measure the text height
+        dummy_text = "A"
+        bbox = font.getbbox(dummy_text)
+        text_height = bbox[3] - bbox[1]
+
+        # Adjust the font size to match the desired height
+        adjusted_size = int(size * desired_height / text_height)
+        return ImageFont.truetype(font_path, adjusted_size)
 
 
 utils = Utils()
