@@ -6,7 +6,6 @@ import cairosvg
 from utils import utils
 import datetime
 
-
 class CardFrontGenerator:
     def __init__(self, staff_member):
         self.staff_member = staff_member
@@ -50,6 +49,9 @@ class CardFrontGenerator:
         
         # add year to top of card
         canvas = self._add_year_text(canvas)
+        
+        # add logo to top left of card
+        canvas = self._add_logo(canvas)
 
         return canvas
 
@@ -275,4 +277,11 @@ class CardFrontGenerator:
         # Composite the text layer onto the canvas
         canvas = Image.alpha_composite(canvas.convert("RGBA"), text_layer)
 
+        return canvas
+    
+    def _add_logo(self, canvas):
+        logo = Image.open("materials/logo.png")
+        logo = logo.resize((142, 120))
+        paste_alpha = logo.split()[-1]
+        canvas.paste(logo, (15, 30), mask=paste_alpha)
         return canvas
