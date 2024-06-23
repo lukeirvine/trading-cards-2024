@@ -3,9 +3,11 @@ from classes.card_generator import CardGenerator
 
 
 class CardApp:
-    def __init__(self, csv_file_path, output_dir):
+    def __init__(self, csv_file_path, output_dir, generate_pdfs=False, use_print_layout=False):
         self.csv_file_path = csv_file_path
         self.output_dir = output_dir
+        self.generate_pdfs = generate_pdfs
+        self.use_print_layout = use_print_layout
 
     def run(self):
         reader = CSVReader(self.csv_file_path)
@@ -26,8 +28,9 @@ class CardApp:
         for staff_member in staff_members:
             front_image, back_image = generator.generate_card(staff_member)
             
-            front_image = generator.add_print_layout(front_image, staff_member, "front")
-            back_image = generator.add_print_layout(back_image, staff_member, "back")
+            if self.use_print_layout:
+                front_image = generator.add_print_layout(front_image, staff_member, "front")
+                back_image = generator.add_print_layout(back_image, staff_member, "back")
             
             front_file_name = f"{staff_member.name} - front.png"
             back_file_name = f"{staff_member.name} - back.png"
@@ -42,4 +45,5 @@ class CardApp:
             })
             print(f"Generated card for {staff_member.name}")
 
-        generator.save_pdfs(generated_images)
+        if self.generate_pdfs:
+            generator.save_pdfs(generated_images)
