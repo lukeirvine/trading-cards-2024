@@ -35,9 +35,6 @@ class CardFrontGenerator:
         c2_color = utils.PALLETES[self.staff_member.department]["secondary"]
         c2_image = self._process_svg("materials/job_container.svg", c2_color)
         c2_image = self._extend_text_container(c2_image, c2_image.width)
-        # print(f"CONT 1 image height: {c1_image.height}")
-        # print(f"CONT 2 image height: {c2_image.height}")
-        print(f"CONT 2 image width: {c2_image.width}")
         canvas.paste(c2_image, (-1, utils.CONT_2_TOP), c2_image)
 
         # add stars

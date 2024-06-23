@@ -51,5 +51,41 @@ class CardGenerator:
             os.makedirs(f"{self.output_dir}/{sub_dir}")
         image.save(f"{self.output_dir}/{sub_dir}/{file_name}")
 
-    def save_pdf(self, images):
-        print(f"TODO: Save {images} to PDF")
+    def save_pdfs(self, card_data):
+        print("\nSaving PDF...")
+        
+        # Create the folder to save the image
+        pdf_folder = f"{self.output_dir}/pdfs"
+        if not os.path.exists(pdf_folder):
+            os.makedirs(pdf_folder)
+            
+        pdf_path = f"{pdf_folder}/mivoden-trading-cards-{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.pdf"
+        pdf_rarity_path = f"{pdf_folder}/mivoden-trading-cards-rarity-{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.pdf"
+        
+        # add iamges
+        images = []
+        rarity_images = []
+        for card in card_data:
+            front_image = Image.open(f"{self.output_dir}/{card['department']}/{card['front-file-name']}")
+            back_image = Image.open(f"{self.output_dir}/{card['department']}/{card['back-file-name']}")
+            
+            images.append(front_image)
+            images.append(back_image)
+            
+            # set frequency
+            frequency = 3
+            years = card['years']
+            if years >= 3:
+                frequency = 2
+            if years >= 6:
+                frequency = 1
+            
+            for i in range(frequency):
+                rarity_images.append(front_image)
+                rarity_images.append(back_image)
+            
+        # save the pdfs
+        images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
+        print(f"PDF saved to {pdf_path}")
+        rarity_images[0].save(pdf_rarity_path, "PDF", resolution=100.0, save_all=True, append_images=rarity_images[1:])
+        print(f"Rarity PDF saved to {pdf_rarity_path}")

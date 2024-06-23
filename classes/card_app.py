@@ -34,8 +34,12 @@ class CardApp:
             generator.save_card(front_image, staff_member.department, front_file_name)
             generator.save_card(back_image, staff_member.department, back_file_name)
             
-            generated_images.append(front_file_name)
-            generated_images.append(back_file_name)
+            generated_images.append({
+                "front-file-name": front_file_name,
+                "back-file-name": back_file_name,
+                "department": staff_member.department,
+                "years": staff_member.years_worked
+            })
             print(f"Generated card for {staff_member.name}")
 
-        generator.save_pdf(generated_images)
+        generator.save_pdfs(generated_images)
