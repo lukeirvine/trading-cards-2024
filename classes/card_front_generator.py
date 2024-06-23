@@ -27,9 +27,9 @@ class CardFrontGenerator:
         border_color = utils.PALLETES[self.staff_member.department]["border_color"]
         border_image = self._process_svg("materials/border.svg", border_color)
         border_image = self._resize_border_image(
-            border_image, utils.CARD_WIDTH + 2, utils.CARD_HEIGHT
+            border_image, utils.CARD_WIDTH + 2, utils.CARD_HEIGHT + 2
         )
-        canvas.paste(border_image, (-1, 0), border_image)
+        canvas.paste(border_image, (-1, -1), border_image)
 
         # add text containers to card
         c2_color = utils.PALLETES[self.staff_member.department]["secondary"]
