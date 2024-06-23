@@ -24,10 +24,18 @@ class CardApp:
         generated_images = []
 
         for staff_member in staff_members:
-            card_image = generator.generate_card(staff_member)
-            file_name = f"{staff_member.name}.png"
-            generator.save_card(card_image, staff_member.department, file_name)
-            generated_images.append(file_name)
+            front_image, back_image = generator.generate_card(staff_member)
+            
+            front_image = generator.add_print_layout(front_image, staff_member)
+            back_image = generator.add_print_layout(back_image, staff_member)
+            
+            front_file_name = f"{staff_member.name} - front.png"
+            back_file_name = f"{staff_member.name} - back.png"
+            generator.save_card(front_image, staff_member.department, front_file_name)
+            generator.save_card(back_image, staff_member.department, back_file_name)
+            
+            generated_images.append(front_file_name)
+            generated_images.append(back_file_name)
             print(f"Generated card for {staff_member.name}")
 
         generator.save_pdf(generated_images)
