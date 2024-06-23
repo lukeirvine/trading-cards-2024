@@ -48,12 +48,6 @@ class CSVReader:
             if "/" in sm.name:
                 errors.append(f"The name column on row {i + 2} should not contain '/'")
 
-            # check that years is less than max
-            if int(sm.years_worked) > utils.MAX_YEARS:
-                errors.append(
-                    f"The years worked for {sm.name} is greater than {utils.MAX_YEARS}."
-                )
-
             # check that department is valid
             palletes = utils.PALLETES
             if sm.department not in palletes.keys():

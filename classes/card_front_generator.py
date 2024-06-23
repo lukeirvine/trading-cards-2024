@@ -136,6 +136,11 @@ class CardFrontGenerator:
         )
         star_width = star.width
         canvas.paste(star, (utils.STAR_START_POS_X, utils.STAR_START_POS_Y), star)
+        
+        star_count = self.staff_member.years_worked
+        if star_count > 14:
+            star_count = 14
+
         for i in range(0, self.staff_member.years_worked):
             offset = utils.STAR_ROW_OFFSET if (i // 7) % 2 == 1 else 0
             x = (

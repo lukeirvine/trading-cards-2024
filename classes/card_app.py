@@ -47,3 +47,5 @@ class CardApp:
 
         if self.generate_pdfs:
             generator.save_pdfs(generated_images)
+            
+        print("=========================================")
