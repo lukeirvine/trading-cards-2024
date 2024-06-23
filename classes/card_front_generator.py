@@ -141,7 +141,7 @@ class CardFrontGenerator:
         if star_count > 14:
             star_count = 14
 
-        for i in range(0, self.staff_member.years_worked):
+        for i in range(0, star_count):
             offset = utils.STAR_ROW_OFFSET if (i // 7) % 2 == 1 else 0
             x = (
                 utils.STAR_START_POS_X
