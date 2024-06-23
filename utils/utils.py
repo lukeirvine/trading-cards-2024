@@ -23,6 +23,8 @@ class Utils:
         self.STAR_SPACING_X = 10
         self.STAR_SPACING_Y = 10
         self.STAR_ROW_OFFSET = -25
+        self.PRINT_WIDTH = 825
+        self.PRINT_HEIGHT = 1125
         
         self.BACK_MARGIN = 50
         
