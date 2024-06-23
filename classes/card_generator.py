@@ -59,8 +59,8 @@ class CardGenerator:
         if not os.path.exists(pdf_folder):
             os.makedirs(pdf_folder)
             
-        pdf_path = f"{pdf_folder}/mivoden-trading-cards-{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.pdf"
-        pdf_rarity_path = f"{pdf_folder}/mivoden-trading-cards-rarity-{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.pdf"
+        pdf_path = f"{pdf_folder}/mivoden-trading-cards-{datetime.datetime.now().strftime('%Y:%m:%d %H-%M-%S')}.pdf"
+        pdf_rarity_path = f"{pdf_folder}/mivoden-trading-cards-rarity-{datetime.datetime.now().strftime('%Y:%m:%d %H-%M-%S')}.pdf"
         
         # add iamges
         images = []
