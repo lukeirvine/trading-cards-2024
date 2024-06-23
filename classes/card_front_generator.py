@@ -58,6 +58,12 @@ class CardFrontGenerator:
     def get_palletes(self):
         return utils.PALLETES
 
+    def get_c1_image(self):
+        return self._process_svg("materials/name_container.svg", utils.PALLETES[self.staff_member.department]["primary"])
+    
+    def get_c2_image(self):
+        return self._process_svg("materials/job_container.svg", utils.PALLETES[self.staff_member.department]["secondary"])
+
     def _resize_and_crop_image(self, image, new_width, new_height):
         # Get the current width and height
         current_width, current_height = image.size
@@ -166,8 +172,7 @@ class CardFrontGenerator:
             text_height = bbox[3] - bbox[1]
             font_top_offset = round(font_size * 0.4)
         
-        c1_color = utils.PALLETES[self.staff_member.department]["primary"]
-        c1_image = self._process_svg("materials/name_container.svg", c1_color)
+        c1_image = self.get_c1_image()
         new_width = text_width + 2 * INDENT + CONTAINER_CUSHION
         if (new_width > utils.CONT_1_MAX_WIDTH):
             new_width = utils.CONT_1_MAX_WIDTH
@@ -228,8 +233,7 @@ class CardFrontGenerator:
             else:
                 text = wrapped_text
 
-        c2_color = utils.PALLETES[self.staff_member.department]["secondary"]
-        c2_image = self._process_svg("materials/job_container.svg", c2_color)
+        c2_image = self.get_c2_image()
         new_width = text_width + 2 * INDENT + CONTAINER_CUSHION
         if new_width > utils.CONT_2_MAX_WIDTH:
             new_width = utils.CONT_2_MAX_WIDTH
