@@ -61,7 +61,7 @@ class Utils:
                 "border_color": (7, 16, 19),
                 "primary": (2, 169, 234),
                 "secondary": (255, 1, 251),
-                "star": (253, 240, 213),
+                "star": (255, 255, 255),
             },
             "activities": {
                 "border_color": (26, 101, 158),
