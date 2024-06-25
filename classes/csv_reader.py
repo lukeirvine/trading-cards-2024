@@ -21,7 +21,7 @@ class CSVReader:
                     position=row["position"],
                     years_worked=row["years_worked"],
                     department=row["department"],
-                    bible_verse=row["bible_verse"],
+                    bible_verse=row["answer"],
                     question_1=row["question_1"],
                     answer_1=row["answer_1"],
                     question_2=row["question_2"],
